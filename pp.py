@@ -6,10 +6,13 @@ pygtk.require("2.0")
 import gtk
 import gobject
 import os
+import re
+import sys
 
 class XmmsCli:
 	""" Class for working with xmms2d via nyxmms2 """
 	def __init__(self, app):
+		self.volume = 100
 		self.app = app
 		self.play()
 		self.is_play = True
@@ -52,7 +55,17 @@ class XmmsCli:
 	def quit(self):
 		""" Xmms2d exit """
 		self.send("server shutdown")
+	
+	def incVolume(self):
+		if self.volume < 100:
+			self.volume += 2
+			self.send('server volume %s' % self.volume)
 		
+	def decVolume(self):
+		if self.volume > 0:
+			self.volume -= 2
+			self.send('server volume %s' % self.volume)
+			
 	def send(self, msg):
 		""" Exec nyxmms2 command """
 		print msg
@@ -93,7 +106,7 @@ class App:
 		self.tray.set_tooltip('Primitive Player')
 		
 		self.tray.connect('activate', self.xmms.pp)
-		#	self.tray.connect('scroll_event', self.scroll_event)
+		self.tray.connect('scroll_event', self.scroll_event)
 		self.tray.connect('popup-menu', self.popup, self.menu)
 		
 		#	init
@@ -101,14 +114,11 @@ class App:
 		
 	def scroll_event(self,param2,event):
 		""" On Scrolling tray """
-		print os.system("nyxmms2 volume_list")
-    #    if event.direction == gdk.SCROLL_UP:
-    #        if master_slider.get_value() < 100:
-    #            master_slider.set_value(master_slider.get_value() + 1)
-    #            
-    #    if event.direction == gdk.SCROLL_DOWN:
-    #        if master_slider.get_value() > 0:
-    #            master_slider.set_value(master_slider.get_value() - 1)
+		if event.direction == gtk.gdk.SCROLL_UP:
+			self.xmms.incVolume()
+		
+		elif event.direction == gtk.gdk.SCROLL_DOWN:
+			self.xmms.decVolume()
 	
 	def popup(self, widget, button, time, data = None):
 		""" rise on right click """
