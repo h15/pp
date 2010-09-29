@@ -11,21 +11,19 @@ class XmmsCli:
 	""" Class for working with xmms2d via nyxmms2 """
 	def __init__(self, app):
 		self.app = app
-		self.pause()
-		self.is_play = False
+		self.play()
+		self.is_play = True
 	
 	def pp(self, null):
 		""" switch pause/play """
-		self.send('toggle')
-		
-		# Change tray icon
 		if self.is_play:
 			self.is_play = False
 			self.app.tray.set_from_stock(gtk.STOCK_MEDIA_PLAY)
+			self.pause()
 		else:
 			self.is_play = True
 			self.app.tray.set_from_stock(gtk.STOCK_MEDIA_PAUSE)
-			
+			self.play()
 	
 	def radd(self, path):
 		""" Add file or directory into xmms2d """
@@ -39,6 +37,10 @@ class XmmsCli:
 		""" Pause xmms """
 		self.send("pause")
 		
+	def play(self):
+		""" Play xmms """
+		self.send("play")
+		
 	def prev(self, null):
 		""" Play previous song """
 		self.send("prev")
@@ -47,7 +49,7 @@ class XmmsCli:
 		""" Play next song """
 		self.send("next")
 	
-	def quit(self, null):
+	def quit(self):
 		""" Xmms2d exit """
 		self.send("server shutdown")
 		
@@ -87,7 +89,7 @@ class App:
 		
 		#	make tray
 		self.tray = gtk.StatusIcon()
-		self.tray.set_from_stock(gtk.STOCK_MEDIA_PLAY)
+		self.tray.set_from_stock(gtk.STOCK_MEDIA_PAUSE)
 		self.tray.set_tooltip('Primitive Player')
 		
 		self.tray.connect('activate', self.xmms.pp)
