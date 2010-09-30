@@ -8,6 +8,7 @@ import gobject
 import os
 import re
 import sys
+from pipes import quote
 
 class XmmsCli:
 	""" Class for working with xmms2d via nyxmms2 """
@@ -30,7 +31,7 @@ class XmmsCli:
 	
 	def radd(self, path):
 		""" Add file or directory into xmms2d """
-		self.send("add file://%s" % path)
+		self.send("add file://%s" % quote(path) )
 		
 	def clear(self, null):
 		""" Flush xmms2d song-list """
