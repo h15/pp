@@ -13,7 +13,6 @@ from pipes import quote
 class XmmsCli:
 	""" Class for working with xmms2d via nyxmms2 """
 	def __init__(self, app):
-		self.volume = 100
 		self.app = app
 		self.play()
 		self.is_play = True
@@ -57,15 +56,11 @@ class XmmsCli:
 		""" Xmms2d exit """
 		self.send("server shutdown")
 	
-	def incVolume(self):
-		if self.volume < 100:
-			self.volume += 2
-			self.send('server volume %s' % self.volume)
+	def seekNext(self):
+		self.send('seek +5')
 		
-	def decVolume(self):
-		if self.volume > 0:
-			self.volume -= 2
-			self.send('server volume %s' % self.volume)
+	def seekPrev(self):
+		self.send('seek -5')
 			
 	def send(self, msg):
 		""" Exec nyxmms2 command """
@@ -116,10 +111,10 @@ class App:
 	def scroll_event(self,param2,event):
 		""" On Scrolling tray """
 		if event.direction == gtk.gdk.SCROLL_UP:
-			self.xmms.incVolume()
+			self.xmms.seekNext()
 		
 		elif event.direction == gtk.gdk.SCROLL_DOWN:
-			self.xmms.decVolume()
+			self.xmms.seekPrev()
 	
 	def popup(self, widget, button, time, data = None):
 		""" rise on right click """
