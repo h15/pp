@@ -61,13 +61,18 @@ class XmmsCli:
 		
 	def seekPrev(self):
 		self.send('seek -5')
+		
+	def shuffle(self, null):
+		self.oldSend('shuffle')
 			
 	def send(self, msg):
 		""" Exec nyxmms2 command """
 		print msg
 		os.system("nyxmms2 %s" % msg)
-		
 	
+	def oldSend(self, msg):
+		print msg
+		os.system("xmms2 %s" % msg)	
 
 class App:
 	"""	Class for drawing primitive GUI	"""
@@ -81,17 +86,20 @@ class App:
 		self.menu_open = gtk.ImageMenuItem(gtk.STOCK_ADD)
 		self.menu_prev = gtk.ImageMenuItem(gtk.STOCK_MEDIA_PREVIOUS)
 		self.menu_next = gtk.ImageMenuItem(gtk.STOCK_MEDIA_NEXT)
-		
+		self.menu_shuffle = gtk.ImageMenuItem("Shuffle")
+		self.menu_shuffle.set_image(\
+			gtk.image_new_from_stock(gtk.STOCK_JUMP_TO, 36))
 		
 		self.menu_open.connect('activate', self.get)
 		self.menu_clear.connect('activate', self.xmms.clear)
 		self.menu_quit.connect('activate', self.quit)
 		self.menu_prev.connect('activate', self.xmms.prev)
 		self.menu_next.connect('activate', self.xmms.next)
-		
+		self.menu_shuffle.connect('activate', self.xmms.shuffle)
 		
 		self.menu.append(self.menu_prev)
 		self.menu.append(self.menu_next)
+		self.menu.append(self.menu_shuffle)
 		self.menu.append(self.menu_open)
 		self.menu.append(self.menu_clear)
 		self.menu.append(self.menu_quit)
